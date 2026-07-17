@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Rangoli Play — Access Verification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#ffffff;
+    --offwhite:#f8fafc;
+    --green-50:#f0fdf4;
+    --green-100:#dcfce7;
+    --green-200:#bbf7d0;
+    --green-300:#86efac;
+    --green-400:#4ade80;
+    --green-500:#22c55e;
+    --green-600:#16a34a;
+    --green-700:#15803d;
+    --green-800:#166534;
+    --green-900:#14532d;
+    --text-main:#0f172a;
+    --text-muted:#64748b;
+    --text-light:#94a3b8;
+    --border:#e2e8f0;
+    --shadow-soft:0 4px 20px rgba(22,163,74,0.08);
+    --shadow-medium:0 8px 30px rgba(22,163,74,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:'Outfit',sans-serif;
+    background:var(--white);
+    color:var(--text-main);
+    overflow:hidden;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* Background */
+  .bg-layer{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 70% 50% at 10% 20%, rgba(34,197,94,0.06), transparent 60%),
+      radial-gradient(ellipse 60% 60% at 90% 80%, rgba(74,222,128,0.04), transparent 55%);
+  }
+  .bg-grid{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(34,197,94,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34,197,94,0.02) 1px, transparent 1px);
+    background-size:60px 60px;
+  }
+
+  /* Main container */
+  .access-container{
+    position:relative;z-index:1;
+    text-align:center;
+    padding:40px 20px;
+    max-width:420px;width:100%;
+  }
+
+  /* Ring loader */
+  .ring-wrap{
+    position:relative;width:120px;height:120px;margin:0 auto 32px;
+  }
+  .ring{
+    position:absolute;inset:0;border-radius:50%;
+    border:3px solid transparent;
+    border-top-color:var(--green-400);
+    animation:spin 1.2s linear infinite;
+  }
+  .ring:nth-child(2){
+    inset:8px;border-top-color:var(--green-300);
+    animation:spin 1.5s linear infinite reverse;
+  }
+  .ring:nth-child(3){
+    inset:16px;border-top-color:var(--green-500);
+    animation:spin 1s linear infinite;
+  }
+  .ring-center{
+    position:absolute;inset:28px;border-radius:50%;
+    background:linear-gradient(135deg, var(--green-400), var(--green-600));
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;color:white;
+    box-shadow:0 8px 25px rgba(22,163,74,0.25);
+    animation:centerPulse 2s ease-in-out infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes centerPulse{
+    0%,100%{box-shadow:0 8px 25px rgba(22,163,74,0.25);}
+    50%{box-shadow:0 12px 35px rgba(22,163,74,0.4);}
+  }
+
+  /* Status text */
+  .status-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:24px;font-weight:700;
+    background:linear-gradient(135deg, var(--green-700), var(--green-500));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:8px;
+    animation:fadeIn 0.5s ease both;
+  }
+  .status-sub{
+    color:var(--text-muted);font-size:14px;font-weight:500;
+    animation:fadeIn 0.5s ease 0.1s both;
+  }
+
+  /* Progress steps */
+  .steps-wrap{
+    margin-top:36px;display:flex;flex-direction:column;gap:12px;
+    animation:fadeIn 0.5s ease 0.2s both;
+  }
+  .step{
+    display:flex;align-items:center;gap:14px;
+    padding:12px 16px;border-radius:12px;
+    background:var(--offwhite);border:1px solid var(--border);
+    transition:all 0.4s ease;
+  }
+  .step.done{
+    background:var(--green-50);border-color:var(--green-200);
+  }
+  .step-icon{
+    width:28px;height:28px;border-radius:50%;
+    background:var(--border);display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:var(--text-light);font-weight:700;
+    transition:all 0.4s ease;flex:none;
+  }
+  .step.done .step-icon{
+    background:linear-gradient(135deg, var(--green-400), var(--green-600));
+    color:white;box-shadow:0 4px 12px rgba(22,163,74,0.2);
+  }
+  .step-text{
+    font-size:14px;font-weight:600;color:var(--text-muted);
+    transition:color 0.4s ease;
+  }
+  .step.done .step-text{color:var(--green-700);}
+
+  /* Progress bar */
+  .progress-wrap{
+    margin-top:28px;height:6px;border-radius:6px;
+    background:var(--border);overflow:hidden;
+    animation:fadeIn 0.5s ease 0.3s both;
+  }
+  .progress-fill{
+    height:100%;width:0%;border-radius:6px;
+    background:linear-gradient(90deg, var(--green-400), var(--green-600));
+    transition:width 0.6s cubic-bezier(0.22,1,0.36,1);
+    box-shadow:0 0 10px rgba(34,197,94,0.3);
+  }
+  .progress-text{
+    margin-top:10px;font-size:12px;font-weight:600;color:var(--text-light);
+    animation:fadeIn 0.5s ease 0.4s both;
+  }
+
+  /* Granted overlay */
+  .granted-overlay{
+    position:fixed;inset:0;z-index:50;
+    background:var(--white);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;
+    transition:opacity 0.5s ease;
+  }
+  .granted-overlay.show{opacity:1;pointer-events:all;}
+  .granted-circle{
+    width:100px;height:100px;border-radius:50%;
+    background:linear-gradient(135deg, var(--green-400), var(--green-600));
+    display:flex;align-items:center;justify-content:center;
+    font-size:44px;color:white;
+    box-shadow:0 15px 40px rgba(22,163,74,0.3);
+    animation:grantedPop 0.6s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes grantedPop{
+    from{transform:scale(0) rotate(-20deg);opacity:0;}
+    to{transform:scale(1) rotate(0deg);opacity:1;}
+  }
+  .granted-overlay h2{
+    margin-top:24px;font-family:'Space Grotesk',sans-serif;
+    font-size:28px;font-weight:700;color:var(--text-main);
+    animation:fadeUp 0.5s ease 0.2s both;
+  }
+  .granted-overlay p{
+    margin-top:6px;color:var(--text-muted);font-size:15px;
+    animation:fadeUp 0.5s ease 0.3s both;
+  }
+
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+  /* Responsive */
+  @media(max-width:480px){
+    .status-title{font-size:20px;}
+    .ring-wrap{width:100px;height:100px;}
+    .granted-overlay h2{font-size:22px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="bg-grid"></div>
+
+<!-- Access Granted Overlay -->
+<div class="granted-overlay" id="grantedOverlay">
+  <div class="granted-circle">🔓</div>
+  <h2>Access Granted</h2>
+  <p>Welcome to Rangoli Play</p>
+</div>
+
+<!-- Main Access Check -->
+<div class="access-container" id="accessContainer">
+  <div class="ring-wrap">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring-center">🔐</div>
+  </div>
+
+  <div class="status-title" id="statusTitle">Verifying Identity</div>
+  <div class="status-sub" id="statusSub">Please wait while we verify your credentials</div>
+
+  <div class="steps-wrap">
+    <div class="step done" id="step1">
+      <div class="step-icon">✓</div>
+      <div class="step-text">Authenticating user session</div>
+    </div>
+    <div class="step" id="step2">
+      <div class="step-icon">2</div>
+      <div class="step-text">Checking homepage access permissions</div>
+    </div>
+    <div class="step" id="step3">
+      <div class="step-icon">3</div>
+      <div class="step-text">Loading your dashboard data</div>
+    </div>
+    <div class="step" id="step4">
+      <div class="step-icon">4</div>
+      <div class="step-text">Preparing game environment</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-text" id="progressText">0% — Initializing…</div>
+</div>
+
+<script>
+const steps = [
+  { id:'step2', title:'Verifying Permissions', sub:'Checking homepage access permissions', pct:35 },
+  { id:'step3', title:'Loading Dashboard', sub:'Fetching your profile and balance', pct:65 },
+  { id:'step4', title:'Finalizing Setup', sub:'Preparing game environment', pct:90 },
+];
+
+let currentStep = 0;
+
+function updateProgress(pct, text){
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '% — ' + text;
+}
+
+function markDone(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.add('done');
+}
+
+function runSequence(){
+  // Step 1 is already done
+  updateProgress(15, 'Authenticated');
+
+  const interval = setInterval(() => {
+    if(currentStep >= steps.length){
+      clearInterval(interval);
+      updateProgress(100, 'Complete');
+      setTimeout(showGranted, 600);
+      return;
+    }
+    const s = steps[currentStep];
+    document.getElementById('statusTitle').textContent = s.title;
+    document.getElementById('statusSub').textContent = s.sub;
+    markDone(s.id);
+    updateProgress(s.pct, s.sub.replace('Checking ','').replace('Fetching ','').replace('Preparing ',''));
+    currentStep++;
+  }, 900);
+}
+
+function showGranted(){
+  document.getElementById('grantedOverlay').classList.add('show');
+  setTimeout(() => {
+    // Redirect to homepage (replace with your actual homepage file)
+    window.location.href = 'homepage.html';
+  }, 1800);
+}
+
+// Start on load
+window.addEventListener('load', () => {
+  setTimeout(runSequence, 400);
+});
+</script>
+</body>
+</html>
