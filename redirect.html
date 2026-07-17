@@ -296,6 +296,13 @@ function showGranted(){
 }
 
 // Start on load
+
+// Check auth state
+const authData = sessionStorage.getItem('rangoli_auth');
+if(!authData){
+  window.location.href = 'login_signup.html';
+}
+
 window.addEventListener('load', () => {
   setTimeout(runSequence, 400);
 });
