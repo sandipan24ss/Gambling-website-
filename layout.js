@@ -1,0 +1,3 @@
+import "./globals.css";
+export const metadata = { title: { default: "Newstrain — News & Ideas", template: "%s | Newstrain" }, description: "Latest stories, ideas and updates." };
+export default function RootLayout({ children }) { return <html lang="en"><body><header className="site-header"><div className="header-inner"><a className="brand" href="/">NEWSTRAIN<span>.</span></a><nav className="nav"><a href="/">Home</a><a href="/?category=Technology">Technology</a><a href="/?category=Business">Business</a><a href="/?category=Science">Science</a></nav></div></header>{children}<footer className="site-footer"><div className="container">© {new Date().getFullYear()} Newstrain Media</div></footer></body></html>; }

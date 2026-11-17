@@ -1,0 +1,1 @@
+export default function NotFound(){return <main className="container"><div className="article-shell"><div className="empty"><h1>Article not found</h1><p>This article may have been removed or is not published.</p><a className="back-link" href="/">← Return home</a></div></div></main>;}
