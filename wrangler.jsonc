@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "firebase-news-ssr",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-17",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "firebase-news-ssr" }],
+  "vars": { "FIREBASE_DATABASE_URL": "https://artical-c2280-default-rtdb.asia-southeast1.firebasedatabase.app" }
+}

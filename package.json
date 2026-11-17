@@ -1,0 +1,13 @@
+{
+  "name": "firebase-news-ssr",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+  },
+  "dependencies": { "next": "latest", "react": "latest", "react-dom": "latest" },
+  "devDependencies": { "@opennextjs/cloudflare": "latest", "wrangler": "latest" }
+}
